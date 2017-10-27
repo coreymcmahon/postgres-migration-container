@@ -1,0 +1,37 @@
+version: '2'
+services:
+  postgres:
+    container_name: migration.pgsql
+    build:
+      context: ./docker/postgres
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_PASSWORD=secret
+    ports:
+     - "54321:5432"
+    volumes:
+     - pgsqldata:/var/lib/postgresql/data
+    networks:
+     - migratenet
+  mysql:
+    container_name: migration.mysql
+    image: mysql:5.6
+    volumes:
+      - mysqldata:/var/lib/mysql
+    environment:
+      - "MYSQL_DATABASE=foodkitdb"
+      - "MYSQL_USER=foodkituser"
+      - "MYSQL_PASSWORD=secret"
+      - "MYSQL_ROOT_PASSWORD=secret"
+    ports:
+        - "33061:3306"
+    networks:
+     - migratenet
+networks:
+  fknet:
+    driver: "bridge"
+volumes:
+  pgsqldata:
+    driver: "local"
+  mysqldata:
+    driver: "local"
