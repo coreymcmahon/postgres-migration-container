@@ -5,6 +5,8 @@ services:
     image: dimitri/pgloader:latest
     volumes:
       - .:/home/root
+    networks:
+      - migratenet
   postgres:
     container_name: migration.pgsql
     build:
@@ -12,6 +14,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - POSTGRES_PASSWORD=secret
+      - PGPASSWORD=secret
     ports:
      - "54666:5432"
     volumes:
@@ -20,12 +23,12 @@ services:
      - migratenet
   mysql:
     container_name: migration.mysql
-    image: mysql:5.6
+    image: mariadb
     volumes:
       - mysqldata:/var/lib/mysql
     environment:
       - "MYSQL_DATABASE=foodkitdb"
-      - "MYSQL_USER=foodkituser"
+      - "MYSQL_USER=mysql_user"
       - "MYSQL_PASSWORD=secret"
       - "MYSQL_ROOT_PASSWORD=secret"
     ports:
